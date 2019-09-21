@@ -10,3 +10,5 @@ Non è permesso toccare il robot degli altri
 
 I tasti per le direzioni vengono randomizzati ogni 10 secondi
 
+Il pilota del robot vincente beve quello che vuole, tutti gli altri piloti bevono il drink XYZ
+
