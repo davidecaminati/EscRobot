@@ -8,6 +8,20 @@
 #define L 16720605	// LEFT
 #define R 16761405	// RIGHT
 #define S 16712445	// STOP
+#define A 16738455  // 1
+#define B 16750695  // 2
+#define C 16756815  // 3
+#define D 16724175  // 4
+#define E 16718055  // 5
+#define G 16743045  // 6
+#define H 16716015  // 7
+#define I 16726215  // 8
+#define Q 16734885  // 9
+#define W 16728765  // *
+#define T 16730805  // 0
+#define Y 16732845  // #
+
+
 /*
 #define UNKNOWN_F 5316027		  // FORWARD
 #define UNKNOWN_B 2747854299	// BACK
@@ -43,7 +57,7 @@ unsigned long preMillis;
   digitalWrite(IN2,LOW);
   digitalWrite(IN3,LOW);
   digitalWrite(IN4,HIGH);
-  Serial.println("go forward!");
+  //Serial.println("go forward!");
 }
 void back(){
   digitalWrite(ENA,HIGH);
@@ -52,7 +66,7 @@ void back(){
   digitalWrite(IN2,HIGH);
   digitalWrite(IN3,HIGH);
   digitalWrite(IN4,LOW);
-  Serial.println("go back!");
+  //Serial.println("go back!");
 }
 void left(){
   analogWrite(ENA,255);
@@ -61,7 +75,7 @@ void left(){
   digitalWrite(IN2,HIGH);
   digitalWrite(IN3,LOW);
   digitalWrite(IN4,HIGH); 
-  Serial.println("go left!");
+  //Serial.println("go left!");
 }
 void right(){
   analogWrite(ENA,255);
@@ -70,13 +84,13 @@ void right(){
   digitalWrite(IN2,LOW);
   digitalWrite(IN3,HIGH);
   digitalWrite(IN4,LOW);
-  Serial.println("go right!");
+  //Serial.println("go right!");
   
 }
 void stop(){
   digitalWrite(ENA, LOW);
   digitalWrite(ENB, LOW);
-  Serial.println("STOP!");  
+  //Serial.println("STOP!");  
 }
 
 void setup() {
@@ -118,5 +132,4 @@ void loop() {
     }
   }
 } 
-
 
