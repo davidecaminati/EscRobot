@@ -19,6 +19,7 @@
 #define UNKNOWN_S 3622325019	// STOP
 
 #define RECV_PIN  12
+#define PIN            10
 #define NUMPIXELS      2
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
