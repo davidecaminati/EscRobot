@@ -1,5 +1,13 @@
 //www.elegoo.com
 
+// defines pins numbers
+const int trigPin = A5;
+const int echoPin = A4;
+
+// defines variables
+long duration;
+int distance;
+
 #include <IRremote.h>
 
 #include <Adafruit_NeoPixel.h>
@@ -22,8 +30,6 @@
 #define PIN            10
 #define NUMPIXELS      2
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
-
-int delayval = 500; // delay for half a second
 
 #define PIN            10
 /*define channel enable output pins*/
@@ -89,6 +95,10 @@ void stop(){
 
 void setup() {
   Serial.begin(9600);
+  pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
+  pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+
+
   pinMode(IN1,OUTPUT);
   pinMode(IN2,OUTPUT);
   pinMode(IN3,OUTPUT);
@@ -106,24 +116,38 @@ void setup() {
 
 }
 
+// #define BRIGHTNESS 150
+#define BRIGHTNESS 3
+const int blinkPeriod = 1000;
+bool isPolice = false;
+
 void loop() {
-    pixels.setPixelColor(0, pixels.Color(0,0,150)); // Moderately bright green color.
-    pixels.setPixelColor(1, pixels.Color(150,0,0)); // Moderately bright green color.
+  if ((millis() % blinkPeriod) == 0) {
+    if (isPolice) {
+      pixels.setPixelColor(0, pixels.Color(0,0,BRIGHTNESS)); // Moderately bright green color.
+      pixels.setPixelColor(1, pixels.Color(BRIGHTNESS,0,0)); // Moderately bright green color.
+    } else {
+      pixels.setPixelColor(0, pixels.Color(0,BRIGHTNESS,0)); // Moderately bright green color.
+      pixels.setPixelColor(1, pixels.Color(0,BRIGHTNESS,0)); // Moderately bright green color.
+    }
 
     pixels.show(); // This sends the updated pixel color to the hardware.
+  } else if ((millis() % blinkPeriod) == (blinkPeriod / 2)) {
+    if (isPolice) {
+      pixels.setPixelColor(1, pixels.Color(0,0,BRIGHTNESS)); // Moderately bright green color.
+      pixels.setPixelColor(0, pixels.Color(BRIGHTNESS,0,0)); // Moderately bright green color.      
+    } else {
+      pixels.setPixelColor(0, pixels.Color(0,BRIGHTNESS,0)); // Moderately bright green color.
+      pixels.setPixelColor(1, pixels.Color(0,BRIGHTNESS,0)); // Moderately bright green color.
+    }
 
-    delay(delayval); // Delay for a period of time (in milliseconds).
-    pixels.setPixelColor(1, pixels.Color(0,0,150)); // Moderately bright green color.
-    pixels.setPixelColor(0, pixels.Color(150,0,0)); // Moderately bright green color.
-
-    pixels.show(); // This sends the updated pixel color to the hardware.
-
-    delay(delayval); // Delay for a period of time (in milliseconds).
+    pixels.show(); // This sends the updated pixel color to the hardware.    
+  }
 
   if (irrecv.decode(&results)){ 
     preMillis = millis();
     val = results.value;
-    Serial.println(val);
+    // Serial.println(val);
     irrecv.resume();
     switch(val){
       case F: 
@@ -134,8 +158,14 @@ void loop() {
       case UNKNOWN_L: left(); break;
       case R: 
       case UNKNOWN_R: right();break;
+      /*
       case S: 
       case UNKNOWN_S: stop(); break;
+      */
+      case S:
+        // the stop button sets isPolice
+        
+        break;
       default: break;
     }
   }
@@ -145,5 +175,21 @@ void loop() {
       preMillis = millis();
     }
   }
+  if (isPolice) return;
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  duration = pulseIn(echoPin, HIGH);
+  
+  // Calculating the distance
+  distance= duration*0.034/2;
+  if (distance < 40){
+    isPolice= true;
+  }
 } 
-
