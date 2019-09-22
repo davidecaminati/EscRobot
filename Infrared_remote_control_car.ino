@@ -2,6 +2,10 @@
 
 #include <IRremote.h>
 
+#include <Adafruit_NeoPixel.h>
+#ifdef __AVR__
+  #include <avr/power.h>
+#endif
 ////////// IR REMOTE CODES //////////
 #define F 16736925	// FORWARD
 #define B 16754775	// BACK
@@ -15,7 +19,12 @@
 #define UNKNOWN_S 3622325019	// STOP
 
 #define RECV_PIN  12
+#define NUMPIXELS      2
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
+int delayval = 500; // delay for half a second
+
+#define PIN            10
 /*define channel enable output pins*/
 #define ENA 5	  // Left  wheel speed
 #define ENB 6	  // Right wheel speed
@@ -87,9 +96,29 @@ void setup() {
   pinMode(ENB,OUTPUT);
   stop();
   irrecv.enableIRIn();  
+  #if defined (__AVR_ATtiny85__)
+  if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
+#endif
+  // End of trinket special code
+
+  pixels.begin(); // This initializes the NeoPixel library.
+
 }
 
 void loop() {
+    pixels.setPixelColor(0, pixels.Color(0,0,150)); // Moderately bright green color.
+    pixels.setPixelColor(1, pixels.Color(150,0,0)); // Moderately bright green color.
+
+    pixels.show(); // This sends the updated pixel color to the hardware.
+
+    delay(delayval); // Delay for a period of time (in milliseconds).
+    pixels.setPixelColor(1, pixels.Color(0,0,150)); // Moderately bright green color.
+    pixels.setPixelColor(0, pixels.Color(150,0,0)); // Moderately bright green color.
+
+    pixels.show(); // This sends the updated pixel color to the hardware.
+
+    delay(delayval); // Delay for a period of time (in milliseconds).
+
   if (irrecv.decode(&results)){ 
     preMillis = millis();
     val = results.value;
